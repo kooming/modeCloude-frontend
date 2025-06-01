@@ -170,7 +170,7 @@ const Friendcontent = () => {
 
   const handleRemoveFollower = (userIdToRemove) => {
     if (!window.confirm("정말로 이 팔로워를 삭제하시겠습니까? 이 작업은 상대방에게 알림이 가지 않으며, 상대방은 여전히 당신을 팔로우 시도할 수 있습니다.")) return;
-    alert(`팔로워 (ID: ${userIdToRemove}) 제거 기능은 백엔드 API 구현이 필요합니다.`);
+    alert(`팔로워 (ID: ${userIdToRemove}) 제거 기능은 아직 지원하지 않습니다.`);
 
   };
 
