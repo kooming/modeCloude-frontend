@@ -8,11 +8,11 @@ const Listwarp = styled.div`
   align-items: center;
 `
 
-const Listselect = ({children,selects}) => {
+const Listselect = ({children,selects,values, onEvent}) => {
   return (
     <Listwarp>
         <Text>{children}</Text>
-        <Selectid content={selects}></Selectid>
+        <Selectid onChange ={(e)=>onEvent(e.target.value)} values={values} content={selects}></Selectid>
     </Listwarp>
   )
 }

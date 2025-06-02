@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import Header from '../tamplate/Header';
+import React, { useEffect, useState } from 'react';
 import Header from '../templates/Header';
 import styled from 'styled-components';
 import ListItem from '../molecules/List/Listitem';
-import Listheader from '../tamplate/List/Listheader';
-import Listselectwarp from '../tamplate/List/Listselectwarp';
+import Listheader from '../templates/List/Listheader';
+import Listselectwarp from '../templates/List/Listselectwarp';
 import { myDiaryData, publicDiaryData } from '../../data/Dummydiarydata';
+import useInput from '../../hooks/useInput';
+import axios from 'axios';
+import { API_URL } from '../../constants/api';
 
 const ListPageWrap = styled.div`
   max-width: 1200px;
@@ -45,6 +47,11 @@ const RecordListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  const [emotion, setEmotion] = useState('전체')
+  const [order, setorder] = useState('desc')
+  const [ispublic, setispublic] = useState('전체')
+  const [value, setvaluehandler ,setvalue] = useInput('')
+
   const selectedData = selectTab === 'mydiary' ? myDiaryData : publicDiaryData;
   const totalPages = Math.ceil(selectedData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -59,12 +66,27 @@ const RecordListPage = () => {
   const isPrevGroupAvailable = startPage > 1;
   const isNextGroupAvailable = endPage < totalPages;
 
+  const [myDiaryDatarel , setmyDiaryDatarel] = useState([]);
+
   const goToPrevGroup = () => {
     if (isPrevGroupAvailable) {
       setCurrentPage(startPage - 1);
     }
   };
-
+  const dataQuery = (string, init, value) => {
+    return `${value != init? string + "=" + value : ""}`
+  }
+  const getListData = async() => {
+    const {data} = await axios.get(`${API_URL}/list?${dataQuery("emotion","전체",emotion)}&${dataQuery("order","최신순",order)}&${dataQuery("public","전체",ispublic)}&${dataQuery("title","",value)}`
+  ,{withCredentials: true}
+)
+    console.log(data)
+    setmyDiaryDatarel(data);
+  }
+  useEffect(()=> {
+    console.log(emotion,order,ispublic,value)
+    getListData()
+  },[emotion,order,ispublic,value])
   const goToNextGroup = () => {
     if (isNextGroupAvailable) {
       setCurrentPage(endPage + 1);
@@ -75,7 +97,7 @@ const RecordListPage = () => {
     <ListPageWrap>
       <Header />
       <Listheader selectTab={selectTab} />
-      <Listselectwarp onClick={(tab) => {
+      <Listselectwarp setEmotion={setEmotion}setorder={setorder}setispublic={setispublic}setvaluehandler={setvaluehandler} onClick={(tab) => {
         setSelectTab(tab);
         setCurrentPage(1);
       }}

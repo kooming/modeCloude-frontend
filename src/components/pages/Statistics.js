@@ -1,10 +1,10 @@
 // Statistics.js
 import React, { useState, useEffect } from 'react';
-import Header from '../tamplate/Header'; 
+import Header from '../templates/Header'; 
 import styled from 'styled-components';
-import Statisticsheader from '../tamplate/Statistics/Statisticsheader'; 
-import Statslayout from '../tamplate/Statistics/Statslayout'; 
-import Statsbody from '../tamplate/Statistics/Statsbody'; // 경로 확인
+import Statisticsheader from '../templates/Statistics/Statisticsheader'; 
+import Statslayout from '../templates/Statistics/Statslayout'; 
+import Statsbody from '../templates/Statistics/Statsbody'; // 경로 확인
 import DiaryCheckContent from '../molecules/Statistics/DiaryCheckContent'; 
 import { myDiaryData } from '../../data/Dummydiarydata'; // 경로 확인
 import axios from 'axios';

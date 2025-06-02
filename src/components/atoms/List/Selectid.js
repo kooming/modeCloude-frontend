@@ -24,12 +24,12 @@ const StyledSelect = styled.select`
   background-size: 16px;
 `;
 
-const Selectid = ({ content = [] }) => {
+const Selectid = ({ content = [] , values, onChange}) => {
   return (
     <SelectWrapper>
-      <StyledSelect>
+      <StyledSelect onChange={onChange}>
         {content.map((el, i) => (
-          <option key={i}>{el}</option>
+          <option key={i} value={values[i]}>{el}</option>
         ))}
       </StyledSelect>
     </SelectWrapper>

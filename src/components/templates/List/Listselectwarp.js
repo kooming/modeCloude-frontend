@@ -31,18 +31,18 @@ const Searchbar = styled.div`
     width: 150px;
     }
 `
-const Listselectwarp = ({ onClick, selectTab }) => {
+const Listselectwarp = ({ onClick, selectTab, setEmotion,setorder,setispublic,setvaluehandler }) => {
   return (
     <Card>
       <Listselectheaderleft>
         <Listselects>
-          <Listselect selects={["전체", "행복", "슬픔", "분노", "평온", "불안", "피곤", "신남", "혼란"]}>감정</Listselect>
-          <Listselect selects={["최신순", "오래된순", "제목순"]}>정렬</Listselect>
-          <Listselect selects={["전체", "공개", "비공개"]} >공개</Listselect>
+          <Listselect onEvent={setEmotion} values={['전체','happy','sad','angry','calm','anxious','tired','excited','confused']} selects={["전체", "행복", "슬픔", "분노", "평온", "불안", "피곤", "신남", "혼란"] }>감정</Listselect>
+          <Listselect onEvent={setorder} values={["desc", "asc", "전체"]} selects={["최신순", "오래된순", "제목순"]}>정렬</Listselect>
+          <Listselect onEvent={setispublic} values={["전체","true",'false']} selects={["전체", "공개", "비공개"]} >공개</Listselect>
         </Listselects>
         <Searchbar>
           <span>🔍</span>
-          <input placeholder='검색어를 입력하세요' />
+          <input onChange={setvaluehandler} placeholder='검색어를 입력하세요' />
         </Searchbar>
       </Listselectheaderleft>
       <Listtap onClick={onClick} selectTab={selectTab} />

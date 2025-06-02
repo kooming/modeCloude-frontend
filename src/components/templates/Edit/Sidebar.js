@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Profiles from '../../molecules/Edit/Formgroup'
+import Profiles from '../../molecules/Edit/Profiles'
 import Tab from '../../atoms/Edit/Tab'
 
 

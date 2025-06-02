@@ -1,5 +1,5 @@
 import Mypage from "./components/pages/Mypage";
-import Edit from "./components/pages/Edit";
+import Setting from "./components/pages/Setting";
 import List from "./components/pages/List";
 import Statistics from "./components/pages/Statistics";
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path={"/edit"} element={<Edit/>}/>
+        <Route path={"/setting"} element={<Setting/>}/>
         <Route path={"/list"} element={<List/>}/>
         <Route path={"/statistics"} element={<Statistics/>}/>
         <Route path="/" element={<Login />} />

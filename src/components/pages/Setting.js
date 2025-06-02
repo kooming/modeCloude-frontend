@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import Header from '../tamplate/Header'
+import Header from '../templates/Header'
 import styled from 'styled-components'
-import EditHeader from '../tamplate/Edit/EditHeader'
-import Sidebar from '../tamplate/Edit/Sidebar'
-import Profilecontent from '../tamplate/Edit/Profilecontent'
-import Friendcontent from '../tamplate/Edit/Friendcontent'
-import Accountcontent from '../tamplate/Edit/Accountcontent'
+import EditHeader from '../templates/Edit/EditHeader'
+import Sidebar from '../templates/Edit/Sidebar'
+import Profilecontent from '../templates/Edit/Profilecontent'
+import Friendcontent from '../templates/Edit/Friendcontent'
+import Accountcontent from '../templates/Edit/Accountcontent'
 
 
 

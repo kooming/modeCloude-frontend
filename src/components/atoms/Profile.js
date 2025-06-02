@@ -21,14 +21,39 @@ const ProfieWrap = styled.div`
       bottom : 0;
     }
 `
+const ImgWarp = styled.div`
+  img{
+    width: 100px;
+    height: 100px;
+     border-radius: 50%;
+     position: relative;
+  }span{
+      width :30px;
+      height :30px;
+      display : flex; 
+      justify-content : center;
+      align-items : center;
+      border-radius : 50%;
+      border : 2px solid #fff;
+      background-color : #b881c2;
+      position : absolute;
+      right : 0;
+      bottom : 0;
+    }
+`
 
-const Profile = ({ children, width, height, border, color, isTag = false }) => {
+const Profile = ({ children, width, height, border, color, isTag = false , imageUrl }) => {
+  if(imageUrl==="")
   return (
     <ProfieWrap width={width} height={height} border={border} color={color}>
       {children}
       {isTag ? <span>✏️</span> : null} 
     </ProfieWrap>
   )
+  return (<ImgWarp>
+  <img src={imageUrl}/>
+  {isTag ? <span>✏️</span> : null} 
+  </ImgWarp>)
 }
 
 export default Profile
