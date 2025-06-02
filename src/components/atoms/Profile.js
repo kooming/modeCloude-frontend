@@ -22,11 +22,11 @@ const ProfieWrap = styled.div`
     }
 `
 const ImgWarp = styled.div`
+  position: relative;
   img{
     width: 100px;
     height: 100px;
      border-radius: 50%;
-     position: relative;
   }span{
       width :30px;
       height :30px;

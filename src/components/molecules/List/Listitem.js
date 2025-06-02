@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Card from '../../atoms/Card';
 import Text from '../../atoms/Text';
 import Icon from '../../atoms/List/Icon';
-import Emotion, { getEmotionLabel } from '../../atoms/Emotion';
+import Emotion /*, { getEmotionLabel } */ from '../../atoms/Emotion'; // getEmotionLabel 사용하지 않으면 제거 가능
 
 const ItemWrap = styled.div`
   display: flex;
@@ -25,7 +25,6 @@ const TopRow = styled.div`
     display: flex;
     gap: 5px;
     align-items: center;
-    
   }
   .diary-left {
     display: flex;
@@ -35,39 +34,48 @@ const TopRow = styled.div`
 `;
 const EmotionsWrap = styled.div`
   display: flex; 
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start; /* 아이콘과 텍스트 정렬을 위해 변경 */
+  gap: 15px; /* 감정 사이 간격 조정 */
   text-align: center;
   
-  .emotions{
+  .emotion-item { /* 각 감정 요소를 위한 클래스 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px; /* 아이콘과 텍스트 사이 간격 */
   }
-`
+`;
 
-const ListItem = ({ title, description, date, type, author, emotion }) => {
+// ListItem props 수정: emotion 대신 userEmotion, aiEmotion 받도록
+const ListItem = ({ title, description, date, type, author, userEmotion, aiEmotion }) => {
   return (
     <Card>
       <ItemWrap>
         <TopRow>
           <div className='diary-left'>
             <Text size="1.1rem" weight="bold" color="#333">{title}</Text>
-            <Text size="0.8rem">{author}</Text>
+            {author && <Text size="0.8rem">{author}</Text>} {/* author가 있을 경우에만 표시 */}
           </div>
           <div className='diary-right'>
-            <Icon type={type} />
+            {type && <Icon type={type} />} {/* type이 있을 경우에만 Icon 표시 */}
             <Text size="0.85rem" color="#999">{date}</Text>
           </div>
         </TopRow>
         <div className='diary-bottom'>
-          <Text size="0.95rem" color="#666" display={"block"} width={"1000px"}>{description}</Text>
-          <EmotionsWrap >
-            <div className='emotions'>
-              <Emotion type={emotion} />
-              <Text size="0.75rem" color="#999">{getEmotionLabel(emotion)}</Text>
-            </div>
-            <div className='emotions'>
-              <Emotion type={emotion} />
-              <Text size="0.75rem" color="#999">{getEmotionLabel(emotion)}</Text>
-            </div>
+          <Text size="0.95rem" color="#666" display={"block"} width={"calc(100% - 150px)"}>{description}</Text> {/* 감정 표시 공간 확보 위해 너비 조정 */}
+          <EmotionsWrap>
+            {userEmotion && ( // userEmotion 객체가 있을 경우 "나의 감정" 표시
+              <div className='emotion-item'>
+                <Emotion type={userEmotion.id} /> 
+                <Text size="0.75rem" color="#888">{userEmotion.name}</Text> 
+              </div>
+            )}
+            {aiEmotion && ( // aiEmotion 객체가 있을 경우 "AI 추천 감정" 표시
+              <div className='emotion-item'>
+                <Emotion type={aiEmotion.id} />
+                <Text size="0.75rem" color="#888">{aiEmotion.name}</Text>
+              </div>
+            )}
           </EmotionsWrap>
         </div>
       </ItemWrap>

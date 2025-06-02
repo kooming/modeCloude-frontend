@@ -7,6 +7,7 @@ import useUser from '../../hooks/useUser';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { getSearchUsers } from '../../api/user';
 import { encodeUidToHash } from '../../utills/useUtills'; 
+import { API_URL } from '../../constants/api';
 
 const Nav = styled.nav`
   width: 100%;
@@ -301,7 +302,7 @@ const Header = () => {
               {user && (
                 <Link to="/mypage">내정보</Link>
               )}
-              <a href="http://localhost:4000/login/logout">로그아웃</a>
+              <a href={`${API_URL}/login/logout`}>로그아웃</a>
             </Dropdown>
           </ProfileSection>
         </RightSection>

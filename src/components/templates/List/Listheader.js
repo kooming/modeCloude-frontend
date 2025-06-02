@@ -33,11 +33,7 @@ const Listheader = ({ selectTab }) => {
           {isMyDiary ? '내 일기' : '모두의 일기'}
         </Text>
       </div>
-      {isMyDiary && (
-        <div className='list-header-btn'>
-          <Button color="white" radius="50px">일기 작성하기</Button>
-        </div>
-      )}
+
     </ListpageHeader>
   );
 };

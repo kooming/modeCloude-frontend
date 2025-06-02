@@ -1,13 +1,14 @@
 // Statistics.js
 import React, { useState, useEffect } from 'react';
-import Header from '../templates/Header'; 
+import Header from '../templates/Header';
 import styled from 'styled-components';
-import Statisticsheader from '../templates/Statistics/Statisticsheader'; 
-import Statslayout from '../templates/Statistics/Statslayout'; 
+import Statisticsheader from '../templates/Statistics/Statisticsheader';
+import Statslayout from '../templates/Statistics/Statslayout';
 import Statsbody from '../templates/Statistics/Statsbody'; // 경로 확인
-import DiaryCheckContent from '../molecules/Statistics/DiaryCheckContent'; 
-import { myDiaryData } from '../../data/Dummydiarydata'; // 경로 확인
+import DiaryCheckContent from '../molecules/Statistics/DiaryCheckContent';
+// import { myDiaryData } from '../../data/Dummydiarydata'; // 경로 확인
 import axios from 'axios';
+import { API_URL } from '../../constants/api';
 
 const StatisticsWarp = styled.div`
     max-width: 1200px;
@@ -46,18 +47,36 @@ const BottomContentRow = styled.div`
 
 const Statistics = () => {
     const [selectTab, setSelectTab] = useState("monthlytab");
+    const [myDiaryData, setMyDiaryData] = useState([]);
     const today = new Date(); // 오늘 날짜 기준으로 초기값 설정
     const [activeStartDate, setActiveStartDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
     const [filteredData, setFilteredData] = useState([]);
 
+    const getData = async () => {
+        const { data } = await axios.get(`${API_URL}/list`, { withCredentials: true });
+        const result = data.map(el => {
+            return {
+                date: new Date(el.createdAt).toISOString().slice(0, 10).replace(/-/g, '.'),
+                description: el.content,
+                emotion: el.emotion.id,
+                id: el.id,
+                title: el.title,
+                type: el.isPublic ? "public" : "private"
+            };
+        })
+        console.log(result);
+        setMyDiaryData(result);
+    }
+
     const diarydataApi = async () => {
-        const {data} = await axios.get("http://127.0.0.1:4000/Main/emotionAll")
+        const { data } = await axios.get("https://devops1.store/Main/emotionAll")
         console.log(data)
         return data;
     }
 
     useEffect(() => {
         diarydataApi();
+        getData();
     }, [])
 
     const handleTabClick = (tabName) => {
@@ -174,7 +193,7 @@ const Statistics = () => {
     return (
         <StatisticsWarp> {/* Header가 StatisticsWarp 안에 있을 수도, 바깥에 있을 수도 있습니다. 현재는 안에 배치. */}
             <Header />
-            <Statisticsheader onClick={handleTabClick} selectTab={selectTab}/>
+            <Statisticsheader onClick={handleTabClick} selectTab={selectTab} />
             <Statslayout filteredEmotionData={filteredData} /> {/* 감정분포, 감정순위 카드 */}
 
             <BottomContentRow>

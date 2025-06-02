@@ -99,7 +99,7 @@ const UserProfileLeft = ({ uid, isMyPage, onFollowChange }) => {
 
         <ButtonWrap>
           {isMe ? (
-            <Link to="/edit">
+            <Link to="/setting">
               <Button weight="100px" color="#b881c2" radius="30px" background="white" onClick={handlEdit}>
                 프로필 편집
               </Button>

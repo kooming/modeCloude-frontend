@@ -3,7 +3,9 @@ import { API_URL } from '../constants/api';
 
 // 로그인 정보 
   export const userLogin = async () => {
-    const {data} = await axios.get(`${API_URL}/login/kakao`)
+    const {data} = await axios.get(`${API_URL}/login/kakao`, {
+      withCredentials : true
+    })
     return data;
   }
 

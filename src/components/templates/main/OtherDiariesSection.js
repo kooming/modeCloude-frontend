@@ -38,7 +38,7 @@ export default function OthersDiariesSection(){
       
   return (
     <DiarySection
-      title="남의 일기"
+      title="팔로잉 일기"
       diaries={filteredDiaries}
       viewMoreText="남의 일기 더 보기"
       viewMoreTo="/list"  

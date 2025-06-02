@@ -3,10 +3,11 @@ import DiaryGrid from '../../molecules/main/DiaryGrid';
 import { Link } from 'react-router-dom'
 
 const Section = styled.section`
-  /* background:#fff; */
-   /* border-radius:15px;  */
-   padding:25px; margin-bottom:30px;
-  /* box-shadow:0 5px 15px rgba(0,0,0,0.05); */
+    background:#fff;
+    border-radius:15px; 
+    padding:25px; margin-bottom:30px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+    margin-top: 5vh;
 `;
 const Title = styled.h3`
     font-size:1.2rem;
@@ -28,11 +29,11 @@ const ViewMore = styled(Link)`
   }
 `;
 
-export default function DiarySection({ title, diaries, viewMoreText, onViewMore, viewMoreTo }) {
+export default function DiarySection({ title, diaries, viewMoreText, onViewMore, viewMoreTo, showWriter }) {
   return (
     <Section>
       <Title>{title}</Title>
-      <DiaryGrid diaries={diaries} />
+      <DiaryGrid diaries={diaries} showWriter={true} />
       {viewMoreText && (
         <ViewMore to={viewMoreTo || '#'}>
           {viewMoreText}

@@ -12,6 +12,7 @@ export const uploadImage = async (blob) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    withCredentials: true
   });
   console.log('서버에서 받은 이미지 URL:', res.data.url);
   return res.data.url;
@@ -23,28 +24,30 @@ export const saveDiary = async (data) => {
     headers: {
       'Content-Type': 'application/json',
     },
+    withCredentials: true, 
   });
   return res.data;
 };
 
-  // Open Ai 감정 처리 
-export const analyzeEmotion = async (content) => {
-  try {
-    const response = await axios.post(`${API_URL}/write/analyze`, { content });
-    const result = response.data.emotion?.trim();
-
-    console.log('[디버깅] AI 감정 분석 결과:', result);
-     
-    if (!result) {
-      console.warn('감정 분석 결과가 비어 있습니다.');
+  export const analyzeEmotion = async (content) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/write/analyze`,
+        { content },
+        {
+          withCredentials: true,
+        }
+      );
+      const result = response.data.emotion?.trim();
+      console.log('[디버깅] AI 감정 분석 결과:', result);
+  
+      if (!result) {
+        console.warn('감정 분석 결과가 비어 있습니다.');
+        return null;
+      }
+      return result;
+    } catch (error) {
+      console.error('감정 분석 실패:', error);
       return null;
     }
-
-    return result;  // 그대로 반환
-
-  } catch (error) {
-    console.error('감정 분석 실패:', error);
-    return null;
-  }
-};
-
+  };

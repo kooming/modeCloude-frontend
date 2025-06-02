@@ -20,6 +20,7 @@ const Wrap = styled.div`
 `;
 
 const Main = () => {
+  
   const { user } = useUser(); 
   const location = useLocation();
   const refetchKey = new URLSearchParams(location.search).get('refetch') || 'default';

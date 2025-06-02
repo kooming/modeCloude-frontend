@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../templates/Header';
 import styled from 'styled-components';
-import ListItem from '../molecules/List/Listitem';
+import Header from '../templates/Header';
+import ListItem from '../molecules/List/Listitem'; 
 import Listheader from '../templates/List/Listheader';
 import Listselectwarp from '../templates/List/Listselectwarp';
-import { myDiaryData, publicDiaryData } from '../../data/Dummydiarydata';
 import useInput from '../../hooks/useInput';
 import axios from 'axios';
 import { API_URL } from '../../constants/api';
+import Text from '../atoms/Text';
+import { Link } from 'react-router-dom';
 
 const ListPageWrap = styled.div`
   max-width: 1200px;
@@ -22,6 +23,16 @@ const DiaryContentWrap = styled.div`
   gap: 10px;
   flex-direction: column;
   margin-top: 10px;
+  .empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #777;
+    font-size: 1rem;
+  }
+  a { 
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 const PaginationWrap = styled.div`
@@ -52,11 +63,19 @@ const RecordListPage = () => {
   const [ispublic, setispublic] = useState('전체')
   const [value, setvaluehandler ,setvalue] = useInput('')
 
-  const selectedData = selectTab === 'mydiary' ? myDiaryData : publicDiaryData;
-  const totalPages = Math.ceil(selectedData.length / itemsPerPage);
+  const [emotion, setEmotion] = useState('전체');
+  
+  const [order, setorderState] = useState('desc'); 
+  const [ispublic, setispublicState] = useState('전체'); 
+  const [value, setvaluehandler, setvalueState] = useInput(''); 
+
+  const [myDiaryDatarel, setmyDiaryDatarel] = useState([]); 
+
+  const totalItems = myDiaryDatarel.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = selectedData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentDisplayItems = myDiaryDatarel.slice(indexOfFirstItem, indexOfLastItem);
 
   const visiblePageCount = 5;
   const currentGroup = Math.floor((currentPage - 1) / visiblePageCount);
@@ -93,50 +112,115 @@ const RecordListPage = () => {
     }
   };
 
+  const dataQuery = (paramName, initValue, currentValue) => {
+    if (currentValue && currentValue !== initValue && currentValue !== "전체") {
+      return `${paramName}=${encodeURIComponent(currentValue)}`;
+    }
+    return "";
+  };
+
+  const getListData = async () => {
+    const commonQueries = [
+      dataQuery("emotion", "전체", emotion),
+      dataQuery("order", "desc", order), 
+      dataQuery("title", "", value)      
+    ].filter(q => q).join("&");
+
+    let apiUrlSegment = "/list";
+    let specificQueries = "";
+
+    if (selectTab === 'publicdiary') {
+      apiUrlSegment = "/list/followed"; 
+    } else { 
+      apiUrlSegment = "/list";
+      specificQueries = dataQuery("public", "전체", ispublic);
+    }
+    
+    const allQueries = [commonQueries, specificQueries].filter(q => q).join("&");
+    const queryString = allQueries ? `?${allQueries}` : '';
+    const fullApiUrl = `${API_URL}${apiUrlSegment}${queryString}`;
+
+    try {
+      console.log(`Fetching from: ${fullApiUrl} for tab: ${selectTab}`);
+      const { data } = await axios.get(fullApiUrl, { withCredentials: true });
+      setmyDiaryDatarel(data || []); 
+      setCurrentPage(1);
+    } catch (error) {
+      console.error(`Error fetching list data for tab ${selectTab}:`, error);
+      setmyDiaryDatarel([]); 
+    }
+  };
+
+  useEffect(() => {
+    getListData();
+  }, [emotion, order, ispublic, value, selectTab]); 
+
+  const getEmptyMessage = () => {
+    if (selectTab === 'mydiary') {
+      return '작성된 일기가 없습니다. 첫 일기를 작성해보세요!';
+    }
+    if (selectTab === 'publicdiary') {
+      return '팔로우한 사용자의 공개된 일기가 없거나, 아직 팔로우한 사용자가 없습니다.';
+    }
+    return '표시할 일기가 없습니다.';
+  };
+
   return (
     <ListPageWrap>
       <Header />
       <Listheader selectTab={selectTab} />
-      <Listselectwarp setEmotion={setEmotion}setorder={setorder}setispublic={setispublic}setvaluehandler={setvaluehandler} onClick={(tab) => {
-        setSelectTab(tab);
-        setCurrentPage(1);
-      }}
+      <Listselectwarp setEmotion={setEmotion}setorder={setorder}setispublic={setispublic}setvaluehandler={setvaluehandler}
+        setEmotion={setEmotion}
+        setorder={setorderState} 
+        setispublic={setispublicState} 
+        setvaluehandler={setvaluehandler} 
+        onClick={(tab) => {
+          setSelectTab(tab);
+        }}
         selectTab={selectTab}
-
       />
       <DiaryContentWrap>
-        {currentItems.map(item => (
-          <ListItem
-            key={item.id}
-            title={item.title}
-            description={item.description}
-            date={item.date}
-            type={item.type}
-            author={item.author}
-            emotion={item.emotion}
-          />
-        ))}
+        {currentDisplayItems.length > 0 ? (
+          currentDisplayItems.map(diary => (
+            <Link key={diary.id} to={`/detail/${diary.id}`}>
+              <ListItem
+                title={diary.title}
+                description={diary.content} 
+                date={new Date(diary.createdAt).toLocaleDateString()} 
+                isPublic={diary.isPublic} 
+                author={(selectTab === 'publicdiary' && diary.writer && diary.writer.nick_name) ? diary.writer.nick_name : null}
+                authorProfileImage={(selectTab === 'publicdiary' && diary.writer && diary.writer.profile_image) ? diary.writer.profile_image : null}
+                userEmotion={diary.emotion} 
+                aiEmotion={diary.selectEmotion} 
+              />
+            </Link>
+          ))
+        ) : (
+          <div className="empty-message">
+            <Text>{getEmptyMessage()}</Text>
+          </div>
+        )}
       </DiaryContentWrap>
 
-      <PaginationWrap>
-        <PageButton onClick={goToPrevGroup} disabled={!isPrevGroupAvailable}>
-          ◀
-        </PageButton>
-
-        {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
-          <PageButton
-            key={startPage + i}
-            active={currentPage === startPage + i}
-            onClick={() => setCurrentPage(startPage + i)}
-          >
-            {startPage + i}
+      {totalItems > 0 && (
+        <PaginationWrap>
+          <PageButton onClick={goToPrevGroup} disabled={!isPrevGroupAvailable}>
+            ◀
           </PageButton>
-        ))}
-
-        <PageButton onClick={goToNextGroup} disabled={!isNextGroupAvailable}>
-          ▶
-        </PageButton>
-      </PaginationWrap>
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+            <PageButton
+              key={startPage + i}
+              active={currentPage === startPage + i}
+              onClick={() => setCurrentPage(startPage + i)}
+            >
+              {startPage + i}
+            </PageButton>
+          ))}
+          <PageButton onClick={goToNextGroup} disabled={!isNextGroupAvailable}>
+            ▶
+          </PageButton>
+        </PaginationWrap>
+      )}
     </ListPageWrap>
   );
 };

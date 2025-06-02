@@ -169,7 +169,7 @@ const CloudGallery = () => {
     <Wrapper>
       <CloudImage src={cloudFace} alt="cloud" />
 
-      {visibleImages.map((img, i) => (
+      {visibleImages.map((img, i) => (  
         img?.url && (
           <DiaryImage
             key={i}

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import DetailBtn from '../../molecules/detail/DetailBtn';
-import FeedbackModal from '../../atoms/FeedbackModal'; 
+import FeedbackModal from '../../atoms/FeedbackModal';
 import { createComment } from '../../../api/diary';
 import useUser from '../../../hooks/useUser';
+import { formatDistanceToNow } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 // 스타일 정의
 const Section = styled.div`
@@ -138,7 +140,7 @@ const Action = styled.span`
 export default function CommentSection({ diaryId, comments = [] }) {
   const [localComments, setLocalComments] = useState(comments);
   const [inputValue, setInputValue] = useState('');
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const user = useUser();
 
   const handleSubmit = async () => {
@@ -155,7 +157,7 @@ export default function CommentSection({ diaryId, comments = [] }) {
       if (res.success) {
         setLocalComments((prev) => [...prev, res.comment]);
         setInputValue('');
-        setShowModal(true); 
+        setShowModal(true);
       }
     } catch (err) {
       console.error('댓글 등록 실패:', err);
@@ -206,7 +208,14 @@ export default function CommentSection({ diaryId, comments = [] }) {
             <Content>
               <CommentHeader>
                 <Author>{comment.writer?.nick_name}</Author>
-                <Time>방금 전</Time>
+                <Time>
+                  {comment.createdAt
+                    ? `${formatDistanceToNow(new Date(comment.createdAt), {
+                        addSuffix: true,
+                        locale: ko
+                      })}`
+                    : '방금 전'}
+                </Time>
               </CommentHeader>
               <Text>{comment.content}</Text>
             </Content>

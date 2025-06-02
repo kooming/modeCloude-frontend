@@ -3,6 +3,7 @@ import Profilesetup from '../../atoms/Edit/Profilesetup'
 import styled from 'styled-components'
 import Button from '../../atoms/Button'
 import Text from '../../atoms/Text'
+import { Link } from 'react-router-dom'
 
 const Accountcontentheader = styled.div`
   width: 100%;
@@ -88,8 +89,10 @@ const Accountcontent = () => {
               <Text color={"red"} size={"1.1rem"} weight={"bold"}>정말 삭제 하시겠습니까?</Text>
             </div>
             <div className='delete-popup-warp-btns'>
-              <Button onClick={()=> setActive(false)} background={"white"}>취소</Button>
-              <Button background={"#f44336"} color={""}>삭제</Button>
+              <Button onClick={() => setActive(false)} background={"white"}>취소</Button>
+              <Link to={'/setting/delete'}>
+                <Button background={"#f44336"} color={""}>삭제</Button>
+              </Link>
             </div>
           </div>
         </div> : null}
